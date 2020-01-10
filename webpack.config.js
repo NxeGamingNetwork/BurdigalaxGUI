@@ -10,13 +10,15 @@ const getConfig = env => ({
   entry: {
     vendors: ["babel-polyfill", "react-hot-loader/patch"],
     onShop: "./src/onShop.js",
+    gasStation: "./src/gasStation.js",
+    inventory: "./src/inventory.js",
     index: "./src/index.js"
   },
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "[name].burdigalax.js",
     publicPath: env.production
-      ? `http://asset/${serverPackageName}/client/gui/onShop/`
+      ? `http://asset/${serverPackageName}/client/gui/`
       : undefined
   },
   module: {
@@ -29,6 +31,18 @@ const getConfig = env => ({
       {
         test: /\.css$/,
         use: ["style-loader", "css-loader"]
+      },
+      {
+        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "[name].[ext]",
+              outputPath: "fonts/"
+            }
+          }
+        ]
       }
     ]
   },
@@ -52,6 +66,16 @@ const getConfig = env => ({
       filename: "onShop.html",
       template: "src/onShop.html",
       chunks: ["onShop", "vendors", "commons"]
+    }),
+    new HtmlWebpackPlugin({
+      filename: "gasStation.html",
+      template: "src/gasStation.html",
+      chunks: ["gasStation", "vendors", "commons"]
+    }),
+    new HtmlWebpackPlugin({
+      filename: "inventory.html",
+      template: "src/inventory.html",
+      chunks: ["inventory", "vendors", "commons"]
     })
   ],
   optimization: {

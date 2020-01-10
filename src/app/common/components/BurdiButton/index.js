@@ -12,7 +12,7 @@ import { BTN_COLOR, BTN_VARIANT } from "./constants";
 
 import BurdiIcon from "../Icon";
 
-const renderIcon = (icon, url, size, props) => {
+const renderIcon = (icon, url, size, hasMarginRight, props) => {
   const {
     color = BTN_COLOR.business,
     variant = BTN_VARIANT.primary,
@@ -22,7 +22,7 @@ const renderIcon = (icon, url, size, props) => {
   } = props;
   const SvgIcon = icon;
   return (
-    <IconWrapper>
+    <IconWrapper hasMarginRight={hasMarginRight}>
       {url ? (
         <BurdiIcon
           size={size}
@@ -49,7 +49,6 @@ const BurdiButton = props => {
     iconLeftUrl,
     iconLeftSize,
     disabled,
-    onClick,
     variant = BTN_VARIANT.primary,
     className,
     isFullWidth = false,
@@ -57,20 +56,27 @@ const BurdiButton = props => {
     onMouseLeave = Function.prototype
   } = props;
 
+  const hasMarginRightIconLeft = !!label;
   return (
     <StyledButton
       isFullWidth={isFullWidth}
       className={className}
       disabled={disabled}
-      onClick={onClick}
       color={color}
       hoverColor={hoverColor}
       variant={variant}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      {...props}
     >
       {(iconLeft || iconLeftUrl) &&
-        renderIcon(iconLeft, iconLeftUrl, iconLeftSize, props)}
+        renderIcon(
+          iconLeft,
+          iconLeftUrl,
+          iconLeftSize,
+          hasMarginRightIconLeft,
+          props
+        )}
       {label}
     </StyledButton>
   );
@@ -82,7 +88,8 @@ export default compose(
     onMouseEnter: ({ setHover, iconLeftUrl = "" }) => () =>
       !isEmpty(iconLeftUrl) && setHover(true),
     onMouseLeave: ({ setHover, iconLeftUrl = "" }) => () =>
-      !isEmpty(iconLeftUrl) && setHover(false)
+      !isEmpty(iconLeftUrl) && setHover(false),
+    onClick: ({ onClick }) => () => onClick()
   }),
   lifecycle({
     componentDidUpdate(prevProps) {
